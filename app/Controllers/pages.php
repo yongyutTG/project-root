@@ -11,7 +11,6 @@ class Pages extends Controller
         return view('welcome_message');
     }
     
-    
     public Function view($pages = 'home'): void{
         if(!is_file(APPPATH.'Views/pages/'.$pages.'.php')){
             throw new \CodeIgniter\Exceptions\PageNotFoundException($pages); //ถ้าไม่มีให้ 404
@@ -19,6 +18,7 @@ class Pages extends Controller
         
             $data['title'] = ucfirst($pages);
             echo view('templates/header',$data);
+            echo view('templates/navbar',$data);
             echo view('pages/'.$pages,$data);
             echo view('templates/footer',$data);
         
