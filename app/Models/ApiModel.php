@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class YourModel extends Model
+class ApiModel extends Model
 {
     protected $table      = 'user_api';
     protected $primaryKey = 'id';

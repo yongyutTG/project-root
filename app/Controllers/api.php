@@ -6,7 +6,7 @@ use CodeIgniter\RESTful\ResourceController;
 
 class Api extends ResourceController
 {
-    protected $modelName = 'App\Models\YourModel';
+    protected $modelName = 'App\Models\ApiModel';
     protected $format    = 'json'; // รองรับ JSON format
 
 
@@ -17,6 +17,10 @@ class Api extends ResourceController
 
     public function index()
     {
+        $data = $this->model->findAll();
+        if ($data) {
+            return $this->respond($data);
+        }
         return $this->respond($this->model->findAll());
     }
 
@@ -26,7 +30,7 @@ class Api extends ResourceController
         if ($data) {
             return $this->respond($data);
         }
-        return $this->failNotFound('Data not found');
+        return $this->failNotFound('ไม่พบข้อมูล');
     }
 
     public function create()
