@@ -1,7 +1,7 @@
 
 <!-- CONTENT -->
 
-<!-- <section>
+<section>
 
     <main role="main">
             <div class="container mt-5 pt-5">
@@ -33,115 +33,81 @@
                     });
                 </script>
 
-                <div class="form-container">
-                    <h2 class="form-title mb-4"></i> คำขอลาที่ได้รับการอนุมัติ<i class="fas fa-check-circle fa-2x status-icon status-approved"></i> หรือปฏิเสธ <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i> </h2>
-                    <div class="table-responsive">
-                        <table id="leaveHistoryTable" class="table table-bordered mt-4 leave-history-table">
-                            <thead>
+            <div class="form-container">
+                <h2 class="form-title mb-4">
+                    คำขอลาที่ได้รับการอนุมัติ 
+                    <i class="fas fa-check-circle fa-2x status-icon status-approved"></i> 
+                    หรือปฏิเสธ 
+                    <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>
+                </h2>
+                <div class="table-responsive">
+                    <table id="leaveHistoryTable" class="table table-bordered mt-4 leave-history-table">
+                        <thead>
                             <tr>
-                                <th>เลขคำขอลา</th>
-                                <th>วันที่ยื่นคำขอ</th>
-                                <th>ชื่อ-นามสกุล</th>
-                                <th>ประเภทการลา</th>
-                                <th>เหตุผล</th>
-                                <th>วันที่เริ่มลา</th>
-                                <th>วันที่สิ้นสุดลา</th>
-                                <th>สถานะการยืนคำขอลา</th>
+                                <th>ID</th>
+                                <th>firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
                             </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><%= request.leaverequestid %></td>
-                                    <td class="request-date"><%= request.requestdate %></td>
-                                    <td><%= request.firstname %> <%= request.lastname %></td>
-                                    <td><%= request.leavetype %></td>
-                                    <td><%= request.reason %></td>
-                                  
-                                    <td class="request-date"><%= request.startdate %></td>
-                                    <td class="request-date"><%= request.enddate %></td>
-                                    <td>
-                                        <% if (request.status === 'approved') { %>
-                                            <i class="fas fa-check-circle fa-2x status-icon status-approved"></i> 
-                                        <% } else if (request.status === 'rejected') { %>
-                                            <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>
-                                        <% } %>
-                                    </td>
-                                </tr>
+                        </thead>
+                        <tbody id="leaveHistoryBody">
                           
-                            </tbody>
-                        </table>
-                    </div>    
-                </div>
+                        </tbody>
+                    </table>
+                </div>    
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+            <script>
+               
+                function getRequests() {
+                    fetch('http://localhost:8080/api')  
+                        .then(response => response.json()) 
+                        .then(data => {
+                            console.log('Data response:', data);
+                            if (data.status === 'success') {
+                               
+                                
+                                let leaveRequests = data.data;
+                                let html = '';
+                                leaveRequests.forEach(request => {
+                                    html += `<tr>
+                                                <td>${request.id}</td>
+                                                <td>${request.firstname}</td>
+                                                <td>${request.lastname}</td>
+                                               <td>${request.email}</td>
+                                                <td>
+                                                    ${request.status === 'approved' 
+                                                        ? '<i class="fas fa-check-circle fa-2x status-icon status-approved"></i>' 
+                                                        : request.status === 'rejected' 
+                                                        ? '<i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>' 
+                                                        : ''
+                                                    }
+                                                </td>
+                                            </tr>`;
+                                });
+                                document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'ข้อมูล',
+                                    text: 'ดึงข้อมูลสำเร็จ'
+                                });
+                            } else {
+                                document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
+                        });
+                }
 
 
-    </main> 
+                window.onload = getRequests;
+            </script>
 
-</section>
- -->
 
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Frontend</title>
-</head>
-<body>
-    <h1>รายการข้อมูลจาก API</h1>
-    <div id="data-container">
-        <!-- ตารางจะแสดงผลที่นี่ -->
-    </div>
 
-    <!-- <script src="script.js"></script> -->
 </body>
 </html>
 
-<script>
-// URL ของ API (ปรับตามที่ตั้งของคุณ)
-const apiUrl = 'http://localhost:8080/api';
-
-// ดึงข้อมูลจาก API และแสดงในหน้าเว็บ
-async function fetchData() {
-    try {
-        // ใช้ Fetch API เพื่อดึงข้อมูล
-        const response = await fetch(apiUrl);
-
-        // ตรวจสอบว่า API ตอบกลับสำเร็จหรือไม่
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // แปลงข้อมูลจาก JSON
-        const data = await response.json();
-
-        // แสดงข้อมูลใน HTML
-        renderData(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        document.getElementById('data-container').innerText = 'Error loading data';
-    }
-}
-
-// แสดงข้อมูลใน HTML
-function renderData(data) {
-    const container = document.getElementById('data-container');
-    let html = '<table border="1"><tr><th>ID</th><th>firstname</th><th>lastname</th><th>Email</th></tr>';
-
-    // วนลูปสร้างแถวข้อมูล
-    data.forEach(item => {
-        html += `<tr>
-                    <td>${item.id}</td>
-                    <td>${item.firstname}</td>
-                     <td>${item.lastname}</td>
-                    <td>${item.email}</td>
-                 </tr>`;
-    });
-
-    html += '</table>';
-    container.innerHTML = html;
-}
-
-// เรียกใช้ฟังก์ชันเมื่อโหลดหน้าเว็บเสร็จ
-fetchData();
-</script>

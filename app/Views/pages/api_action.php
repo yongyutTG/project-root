@@ -42,17 +42,13 @@
         <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>
     </h2>
     
-    <!-- ช่องกรอกเลขคำขอลา -->
+   
     <label for="leaveRequestId">กรอกเลข ID:</label>
     <input type="text" id="leaveRequestId" placeholder="ใส่ ID ค้นหา" />
     <button onclick="getLeaveRequestById(document.getElementById('leaveRequestId').value)">ค้นหา</button>
     <button onclick="deleteLeaveRequestById(document.getElementById('leaveRequestId').value)">ลบข้อมูล</button>
     <button onclick="getRequests()">ดึงข้อมูล</button>
-    <!-- <button class="btn btn-primary mb-3" onclick="getRequests()">ดึงข้อมูล</button> -->
-        <!-- ปุ่มเปิด Modal -->
-    <button data-bs-toggle="modal" data-bs-target="#addRequestModal">
-        เพิ่มข้อมูล
-    </button>
+    <button data-bs-toggle="modal" data-bs-target="#addRequestModal">เพิ่มข้อมูล</button>
 
         <!-- Modal -->
     <div class="modal fade" id="addRequestModal" tabindex="-1" aria-labelledby="addRequestModalLabel" aria-hidden="true">
@@ -94,17 +90,18 @@
                 <th>firstname</th>
                 <th>Lastname</th>
                 <th>Email</th>
+                
                 </tr>
             </thead>
             <tbody id="leaveHistoryBody">
                 <!-- ข้อมูลจะถูกแสดงที่นี่ -->
+               
             </tbody>
         </table>
     </div>    
 </div>
 
-<script>
-    
+<!-- <script> //Read
     function getRequests() {
         fetch('http://localhost:8080/api')  
             .then(response => response.json()) 
@@ -121,14 +118,6 @@
                                     <td>${request.firstname}</td>
                                     <td>${request.lastname}</td>
                                     <td>${request.email}</td>
-                                    <td>
-                                        ${request.status === 'approved' 
-                                            ? '<i class="fas fa-check-circle fa-2x status-icon status-approved"></i>' 
-                                            : request.status === 'rejected' 
-                                            ? '<i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>' 
-                                            : ''
-                                        }
-                                    </td>
                                 </tr>`;
                     });
                     document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
@@ -150,51 +139,135 @@
 
 
     // window.onload = getRequests;
+</script> -->
+<script>
+    // Read
+    function getRequests() {
+        fetch('http://localhost:8080/api')  
+            .then(response => response.json()) 
+            .then(data => {
+                console.log('Data response:', data);
+                if (data.status === 'success') {
+                    
+                    let leaveRequests = data.data;
+                    let html = '';
+                    leaveRequests.forEach(request => {
+                        html += `<tr>
+                                    <td>${request.id}</td>
+                                    <td>${request.firstname}</td>
+                                    <td>${request.lastname}</td>
+                                    <td>${request.email}</td>
+                                    <td>
+                                        <button class="edit-btn" onclick="editRequest(${request.id})">Edit</button>
+                                        <button class="delete-btn" onclick="deleteLeaveRequestById(${request.id})">Delete</button>
+                                    </td>
+                                </tr>`;
+                    });
+                    document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ข้อมูล',
+                        text: 'ดึงข้อมูลสำเร็จ'
+                    });
+                } else {
+                    document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
+            });
+    }
+
+    // Function to edit a request (Placeholder function)
+    function editRequest(id) {
+        // Logic for editing the request (e.g., show a form with the current data)
+        console.log('Editing request with ID:', id);
+        // You can redirect to an edit page or show a form to update the request here
+    }
+
+    // Function to delete a request (Placeholder function)
+    function deleteRequest(leaveRequestId) {
+        // Logic for deleting the request
+        console.log('Deleting request with ID:', id);
+        // You can send a request to the backend to delete the request here
+          fetch(`http://localhost:8080/api/${leaveRequestId}`, {
+            method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'สำเร็จ',
+                    text: 'ลบข้อมูลสำเร็จ'
+                });
+                getRequests(); // Refresh the list after deletion
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถลบข้อมูลได้'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'เกิดข้อผิดพลาดในการลบข้อมูล'
+            });
+        });
+    }
+
+    // window.onload = getRequests;
 </script>
 
 
-<script>
-        function create_data() {
-            var firstname = document.getElementById('createFirstname').value;
-            var lastname = document.getElementById('createLastname').value;
-            var email = document.getElementById('createEmail').value;
-            if (!firstname || !lastname || !email) {
-                alert('กรุณากรอกข้อมูลให้ครบ');
-                return;
-            }
-            var newRequestData = { firstname, lastname, email };
-            console.log('Data Request:', newRequestData); // ตรวจสอบข้อมูลที่ส่ง
-            fetch('http://localhost:8080/api', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newRequestData),
-            })
-                .then(response => response.json())  
-                .then(data => {  
-                    console.log('Data response:', data);
-                    if (data.status === 'success') {
-                            Swal.fire({
-                            icon: 'success',
-                            title: 'ข้อมูล',
-                            text: 'สร้างข้อมูลสำเร็จ'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'ข้อมูล',
-                            text: 'สร้างข้อมูลไม่สำเร็จ'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาดในการสร้างข้อมูล');
-                });
+<script> //Cread
+    function create_data() {
+        var firstname = document.getElementById('createFirstname').value;
+        var lastname = document.getElementById('createLastname').value;
+        var email = document.getElementById('createEmail').value;
+        if (!firstname || !lastname || !email) {
+            alert('กรุณากรอกข้อมูลให้ครบ');
+            return;
         }
+        var newRequestData = { firstname, lastname, email };
+        console.log('Data Request:', newRequestData); // ตรวจสอบข้อมูลที่ส่ง
+        fetch('http://localhost:8080/api', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newRequestData),
+        })
+            .then(response => response.json())  
+            .then(data => {  
+                console.log('Data response:', data);
+                if (data.status === 'success') {
+                        Swal.fire({
+                        icon: 'success',
+                        title: 'ข้อมูล',
+                        text: 'สร้างข้อมูลสำเร็จ'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ข้อมูล',
+                        text: 'สร้างข้อมูลไม่สำเร็จ'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการสร้างข้อมูล');
+            });
+    }
 
-  </script>
+</script>
 
-<script>
+<script>  //Read By ID
     function getLeaveRequestById() {
         var leaveRequestId = document.getElementById('leaveRequestId').value;
         if (!leaveRequestId) {
@@ -241,8 +314,8 @@
             });
     }
 </script>
-<script>
-    // ลบข้อมูลตาม ID
+
+<script>   // Dealte ลบข้อมูลตาม ID
     function deleteLeaveRequestById(leaveRequestId) {
         fetch(`http://localhost:8080/api/${leaveRequestId}`, {
             method: 'DELETE', // ใช้ HTTP DELETE
