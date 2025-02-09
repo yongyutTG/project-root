@@ -18,13 +18,13 @@ class Filters extends BaseConfig
      * @var array<string, class-string|list<class-string>> [filter_name => classname]
      *                                                     or [filter_name => [classname1, classname2, ...]]
      */
-    public array $aliases = [
-        'csrf'          => CSRF::class,
-        'toolbar'       => DebugToolbar::class,
-        'honeypot'      => Honeypot::class,
-        'invalidchars'  => InvalidChars::class,
-        'secureheaders' => SecureHeaders::class,
-    ];
+    // public array $aliases = [
+    //     'csrf'          => CSRF::class,
+    //     'toolbar'       => DebugToolbar::class,
+    //     'honeypot'      => Honeypot::class,
+    //     'invalidchars'  => InvalidChars::class,
+    //     'secureheaders' => SecureHeaders::class,
+    // ];
 
     /**
      * List of filter aliases that are always
@@ -32,19 +32,44 @@ class Filters extends BaseConfig
      *
      * @var array<string, array<string, array<string, string>>>|array<string, list<string>>
      */
-    public array $globals = [
-        'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-        ],
-        'after' => [
-            'toolbar',
-            // 'honeypot',
-            // 'secureheaders',
-        ],
+    // public array $globals = [
+    //     'before' => [
+    //         // 'honeypot',
+    //         // 'csrf',
+    //         // 'invalidchars',
+    //     ],
+    //     'after' => [
+    //         'toolbar',
+    //         // 'honeypot',
+    //         // 'secureheaders',
+    //     ],
+    // ];
+    public $aliases = [
+        'apiKeyAuth' => \App\Filters\ApiKeyAuth::class,
     ];
-
+    
+    public $globals = [
+        'before' => [],
+        'after' => [],
+    ];
+    
+    // public $methods = [
+    //     'get' => ['apiKeyAuth'], // บังคับใช้ API Key สำหรับ GET
+    //     'post' => ['apiKeyAuth'], // บังคับใช้ API Key สำหรับ POST
+    // ];
+    
+    public $filters = [
+        'apiKeyAuth' => [
+            'before' => [
+                'api/protected-endpoint',  // ให้ตรวจสอบเฉพาะ API ที่ต้องการป้องกัน
+                'api/validate-api-key',
+            ]
+        ]
+    ];
+    
+    
+  
+    
     /**
      * List of filter aliases that works on a
      * particular HTTP method (GET, POST, etc.).
@@ -58,7 +83,7 @@ class Filters extends BaseConfig
      *
      * @var array<string, list<string>>
      */
-    public array $methods = [];
+    // public array $methods = [];
 
     /**
      * List of filter aliases that should run on any
@@ -69,5 +94,5 @@ class Filters extends BaseConfig
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    // public array $filters = [];
 }

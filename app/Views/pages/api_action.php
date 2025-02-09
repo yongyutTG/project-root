@@ -1,23 +1,8 @@
 
 <!-- CONTENT -->
-
 <section>
-
     <main role="main">
             <div class="container mt-5 pt-5">
-                <div class="leave-policy">
-                <h3>Wellcome to Home Pages</h3>
-                    <ul>
-                        <li><strong>ลาพักร้อน:</strong> พนักงานมีสิทธิลาพักร้อนได้ปีละ 10 วัน หลังจากทำงานครบ 1 ปี</li>
-                        <li><strong>ลากิจส่วนตัว:</strong> สามารถลางานได้โดยไม่หักค่าจ้าง 5 วันต่อปี</li>
-                        <li><strong>ลาป่วย:</strong> พนักงานสามารถลาป่วยได้ตามความจำเป็น แต่ต้องมีใบรับรองแพทย์หากลาติดต่อกันเกิน 3 วัน</li>
-                        <li><strong>ลาคลอด:</strong> พนักงานหญิงมีสิทธิลาคลอดได้ 90 วัน โดยมีเงินเดือนจ่าย 45 วันตามกฎหมายแรงงาน</li>
-                        <li><strong>การยื่นขอลา:</strong> พนักงานต้องยื่นใบคำขอลาล่วงหน้าอย่างน้อย 3 วันทำการ ยกเว้นกรณีลาป่วยที่สามารถยื่นย้อนหลังได้</li>
-                        <li><strong>เอกสาร:</strong> สำหรับการลาป่วยเกิน 3 วัน ต้องแนบใบรับรองแพทย์</li>
-                    </ul>
-                    
-                </div>
-    
                 <script>
                     document.addEventListener("DOMContentLoaded", () => {
                        
@@ -32,15 +17,13 @@
                         });
                     });
                 </script>
-
-
             <div class="form-container">
-    <h2 class="form-title mb-4">
-        คำขอลาที่ได้รับการอนุมัติ 
-        <i class="fas fa-check-circle fa-2x status-icon status-approved"></i> 
-        หรือปฏิเสธ 
-        <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>
-    </h2>
+            <h2 class="form-title mb-4">
+                คำขอลาที่ได้รับการอนุมัติ 
+                <i class="fas fa-check-circle fa-2x status-icon status-approved"></i> 
+                หรือปฏิเสธ 
+                <i class="fas fa-times-circle fa-2x status-icon status-rejected"></i>
+            </h2>
     
    
     <label for="leaveRequestId">กรอกเลข ID:</label>
@@ -90,7 +73,7 @@
                 <th>firstname</th>
                 <th>Lastname</th>
                 <th>Email</th>
-                
+                <th>Action</th>
                 </tr>
             </thead>
             <tbody id="leaveHistoryBody">
@@ -101,126 +84,58 @@
     </div>    
 </div>
 
-<!-- <script> //Read
-    function getRequests() {
-        fetch('http://localhost:8080/api')  
-            .then(response => response.json()) 
-            .then(data => {
-                console.log('Data response:', data);
-                if (data.status === 'success') {
-                    
-                    
-                    let leaveRequests = data.data;
-                    let html = '';
-                    leaveRequests.forEach(request => {
-                        html += `<tr>
-                                    <td>${request.id}</td>
-                                    <td>${request.firstname}</td>
-                                    <td>${request.lastname}</td>
-                                    <td>${request.email}</td>
-                                </tr>`;
-                    });
-                    document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ข้อมูล',
-                        text: 'ดึงข้อมูลสำเร็จ'
-                    });
-                } else {
-                    document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
-            });
-    }
-
-
-    // window.onload = getRequests;
-</script> -->
 <script>
     // Read
     function getRequests() {
-        fetch('http://localhost:8080/api')  
-            .then(response => response.json()) 
-            .then(data => {
-                console.log('Data response:', data);
-                if (data.status === 'success') {
-                    
-                    let leaveRequests = data.data;
-                    let html = '';
-                    leaveRequests.forEach(request => {
-                        html += `<tr>
-                                    <td>${request.id}</td>
-                                    <td>${request.firstname}</td>
-                                    <td>${request.lastname}</td>
-                                    <td>${request.email}</td>
-                                    <td>
-                                        <button class="edit-btn" onclick="editRequest(${request.id})">Edit</button>
-                                        <button class="delete-btn" onclick="deleteLeaveRequestById(${request.id})">Delete</button>
-                                    </td>
-                                </tr>`;
-                    });
-                    document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ข้อมูล',
-                        text: 'ดึงข้อมูลสำเร็จ'
-                    });
-                } else {
-                    document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
+    fetch('http://localhost:8080/api', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับ
+        }
+    })
+    .then(response => response.json()) 
+    .then(data => {
+        console.log('Data response:', data);
+        if (data.status === 'success') {
+            let leaveRequests = data.data;
+            let html = '';
+            leaveRequests.forEach(request => {
+                html += `<tr>
+                            <td>${request.id}</td>
+                            <td>${request.firstname}</td>
+                            <td>${request.lastname}</td>
+                            <td>${request.email}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editRequest(${request.id})">Edit</button>
+                                <button class="delete-btn" onclick="deleteLeaveRequestById(${request.id})">Delete</button>
+                            </td>
+                        </tr>`;
             });
-    }
+            document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
 
-    // Function to edit a request (Placeholder function)
+            Swal.fire({
+                icon: 'success',
+                title: 'ข้อมูล',
+                text: 'ดึงข้อมูลสำเร็จ'
+            });
+        } else {
+            document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูล</td></tr>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
+    });
+}
+
+
     function editRequest(id) {
-        // Logic for editing the request (e.g., show a form with the current data)
         console.log('Editing request with ID:', id);
         // You can redirect to an edit page or show a form to update the request here
     }
 
-    // Function to delete a request (Placeholder function)
-    function deleteRequest(leaveRequestId) {
-        // Logic for deleting the request
-        console.log('Deleting request with ID:', id);
-        // You can send a request to the backend to delete the request here
-          fetch(`http://localhost:8080/api/${leaveRequestId}`, {
-            method: 'DELETE',
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'สำเร็จ',
-                    text: 'ลบข้อมูลสำเร็จ'
-                });
-                getRequests(); // Refresh the list after deletion
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถลบข้อมูลได้'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'เกิดข้อผิดพลาด',
-                text: 'เกิดข้อผิดพลาดในการลบข้อมูล'
-            });
-        });
-    }
+    
 
     // window.onload = getRequests;
 </script>
@@ -268,51 +183,58 @@
 </script>
 
 <script>  //Read By ID
-    function getLeaveRequestById() {
-        var leaveRequestId = document.getElementById('leaveRequestId').value;
-        if (!leaveRequestId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'กรุณากรอกเลขคำขอลา',
-                text: 'คุณต้องกรอกรหัสคำขอลาเพื่อทำการค้นหา'
-            });
-            return;
-        }
-        console.log('Data Request:', leaveRequestId); // ตรวจสอบข้อมูลที่ส่ง
-
-        // ทำการ fetch ข้อมูลจาก API โดยส่ง ID ใน URL
-        fetch(`http://localhost:8080/api/${leaveRequestId}`)
-            .then(response => response.json()) // แปลงข้อมูลเป็น JSON
-            .then(data => {
-                console.log('Data response:', data);
-                if (data.status === 'success') {
-                    let request = data.data; // ข้อมูลที่ได้
-                    let html = `<tr>
-                                   <td>${request.id}</td>
-                                    <td>${request.firstname}</td>
-                                    <td>${request.lastname}</td>
-                                    <td>${request.email}</td>
-                                </tr>`;
-                    document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
-                } else {
-                    document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูลสำหรับคำขอลานี้</td></tr>';
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'ไม่พบข้อมูล',
-                        text: 'คำขอลานี้ไม่พบข้อมูลในระบบ'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถดึงข้อมูลจากเซิร์ฟเวอร์ได้'
-                });
-            });
+ function getLeaveRequestById() {
+    var leaveRequestId = document.getElementById('leaveRequestId').value;
+    if (!leaveRequestId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'กรุณากรอกเลขคำขอลา',
+            text: 'คุณต้องกรอกรหัสคำขอลาเพื่อทำการค้นหา'
+        });
+        return;
     }
+
+    console.log('Data Request:', leaveRequestId); // ตรวจสอบข้อมูลที่ส่ง
+
+    fetch(`http://localhost:8080/api/${leaveRequestId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+           'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับs
+        }
+    })
+    .then(response => response.json()) // แปลงข้อมูลเป็น JSON
+    .then(data => {
+        console.log('Data response:', data);
+        if (data.status === 'success') {
+            let request = data.data; // ข้อมูลที่ได้
+            let html = `<tr>
+                            <td>${request.id}</td>
+                            <td>${request.firstname}</td>
+                            <td>${request.lastname}</td>
+                            <td>${request.email}</td>
+                        </tr>`;
+            document.getElementById('leaveHistoryBody').innerHTML = html; // แสดงข้อมูลใน tbody
+        } else {
+            document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">ไม่พบข้อมูลสำหรับคำขอลานี้</td></tr>';
+            Swal.fire({
+                icon: 'warning',
+                title: 'ไม่พบข้อมูล',
+                text: 'คำขอลานี้ไม่พบข้อมูลในระบบ'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('leaveHistoryBody').innerHTML = '<tr><td colspan="8">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถดึงข้อมูลจากเซิร์ฟเวอร์ได้'
+        });
+    });
+}
+
 </script>
 
 <script>   // Dealte ลบข้อมูลตาม ID
@@ -320,8 +242,9 @@
         fetch(`http://localhost:8080/api/${leaveRequestId}`, {
             method: 'DELETE', // ใช้ HTTP DELETE
             headers: {
-                'Content-Type': 'application/json',
-            },
+            'Content-Type': 'application/json',
+            'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับs
+             }
         })
             .then(response => response.json())
             .then(data => {
@@ -339,6 +262,11 @@
     }
 
 </script>
+
+<script>
+   
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>

@@ -1,141 +1,84 @@
 <?php
+
 namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\Validation\Validation;
+use App\Models\ApiModel;
 
-class Api extends ResourceController
+class api extends ResourceController
 {
-    protected $db;
-    protected $validation;
+    protected $apiModel;
 
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
-        $this->validation = \Config\Services::validation(); // เรียกใช้งาน Validation Service
+        $this->apiModel = new ApiModel();
     }
+
 
     public function index()
     {
-        $query = $this->db->query("SELECT * FROM user_api");
-        $data = $query->getResult(); // แปลงผลลัพธ์เป็น array
-        if ($data) {
+        
+        $data = $this->apiModel->getAll();
+        if (!empty($data)) {
             return $this->respond([
                 'status' => 'success',
                 'message' => 'เรียกข้อมูลสำเร็จ',
                 'data' => $data
-            ]);
+            ], 200);
         } else {
             return $this->respond([
                 'status' => 'error',
-                'message' => 'ไม่พบข้อมูล'
-            ]);
+                'message' => 'ไม่พบข้อมูล',
+                'data' => null
+            ], 404);
         }
+        // return $this->respond(['status' => 'success', 'data' => $data]);
     }
 
     public function show($id = null)
     {
-        $query = $this->db->query("SELECT * FROM user_api WHERE id = ?", [$id]);
-        $data = $query->getRow();
+        $data = $this->apiModel->getById($id);
         if ($data) {
-            return $this->respond([
+            return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'เรียกข้อมูลสำเร็จ',
                 'data' => $data
-            ]);
+           ], 200);
         } else {
-            return $this->respond([
+            return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'ไม่พบข้อมูล'
-            ]);
+                'message' => 'ไม่พบข้อมูล',
+                'data' => null
+           ], 404);
         }
     }
+
 
     public function create()
     {
-        $input = $this->request->getJSON(true); // ใช้ getJSON หากรับ JSON โดยตรง
-        $rules = [
-            'firstname' => 'required|min_length[3]|max_length[100]',
-            'lastname'  => 'required|min_length[3]|max_length[100]',
-            'email'     => 'required|valid_email'
-        ];
-
-        if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validation->getErrors());
-        }
+        $input = $this->request->getJSON(true);
         
-        $sql = "INSERT INTO user_api (firstname, lastname, email) VALUES (?, ?, ?)";
-        $result = $this->db->query($sql, [$input['firstname'], $input['lastname'], $input['email']]);
-        
-        if ($result) {
-            return $this->respondCreated([
-                'status' => 'success', 
-                'message' => 'เพิ่มข้อมูลสำเร็จ', 
-                'data' => $input
-            ]);
-        } else {
-            
-            return $this->respond([
-                'status' => 'error',
-                'message' => 'สร้างข้อมูลไม่สำเร็จ'
-            ]);
+        if ($this->apiModel->insertData($input)) {
+            return $this->respondCreated(['status' => 'success', 'message' => 'เพิ่มข้อมูลสำเร็จ']);
         }
+        return $this->fail('เพิ่มข้อมูลไม่สำเร็จ');
     }
-   
-    
+
+
     public function update($id = null)
     {
-        $input = $this->request->getRawInput(); 
-        $rules = [
-            'firstname' => 'required|min_length[3]|max_length[100]',
-            'lastname'  => 'required|min_length[3]|max_length[100]',
-            'email'     => 'required|valid_email'
-        ];
-
-        if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validation->getErrors());
+        $input = $this->request->getRawInput();
+        if ($this->apiModel->updateData($id, $input)) {
+            return $this->respond(['status' => 'success', 'message' => 'อัปเดตข้อมูลสำเร็จ']);
         }
-
-        $sql = "UPDATE user_api SET firstname = ?, lastname = ?, email = ? WHERE id = ?";
-        $result = $this->db->query($sql, [$input['firstname'], $input['lastname'], $input['email'], $id]);
-
-        if ($result) {
-            return $this->respond([
-                'status' => 'success', 
-                'message' => 'อัปเดตข้อมูลสำเร็จ', 
-                'data' => $input
-            ]);
-        } else {
-            return $this->respond([
-                'status' => 'error', 
-                'message' => 'อัปเดตข้อมูลไม่สำเร็จ', 
-            ]);
-        }
+        return $this->fail('อัปเดตข้อมูลไม่สำเร็จ');
     }
 
     public function delete($id = null)
     {
-        $query = $this->db->query("SELECT * FROM user_api WHERE id = ?", [$id]);
-        $data = $query->getRow();
-        
-        if (!$data) {
-            return $this->failNotFound('ไม่พบข้อมูลที่จะลบ');
+        if ($this->apiModel->deleteData($id)) {
+            return $this->respondDeleted(['status' => 'success', 'message' => 'ลบข้อมูลสำเร็จ']);
         }
-
-        $sql = "DELETE FROM user_api WHERE id = ?";
-        $result = $this->db->query($sql, [$id]);
-
-        if ($result) {
-            return $this->respondDeleted([
-                'id' => $id, 
-                'status' => 'success',
-                'message' => 'ลบข้อมูลสำเร็จ'
-            ]);
-        } else {
-            return $this->respond([
-                'status' => 'error', 
-                'message' => 'ลบข้อมูลไม่สำเร็จ', 
-            ]);
-        }
+        return $this->failNotFound('ไม่พบข้อมูลที่จะลบ');
     }
 }
