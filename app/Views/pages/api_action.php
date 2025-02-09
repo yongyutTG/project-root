@@ -91,7 +91,8 @@
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับ
+            'X-API-Key': 'ec3e372a2754d167c6cf218d65e0e3c49eaf69dcc15abb01a0e0780c8c1f527e', // 🔑 ใส่ API Key ที่ได้รับ
+            // 'Authorization': `Bearer your-secret-api-key` // 🔐 ใช้ Authorization Header
         }
     })
     .then(response => response.json()) 
