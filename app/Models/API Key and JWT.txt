@@ -1,0 +1,9 @@
+🔥 วิธีการทำงาน
+Client ส่ง API Key ผ่าน Authorization Header
+Server ตรวจสอบ API Key
+ถ้า API Key ถูกต้อง → ให้ดำเนินการต่อ
+ถ้า API Key ผิด → ปฏิเสธการเข้าถึง (403 Forbidden)
+หลังจากตรวจสอบ API Key ผ่านแล้ว
+ให้ Client ส่ง JWT Token เพื่อยืนยันตัวตน
+ตรวจสอบ JWT → ดึงข้อมูล User (ID, Role, Permissions)
+อนุญาตให้เข้าถึง API ตามสิทธิ์ของ User

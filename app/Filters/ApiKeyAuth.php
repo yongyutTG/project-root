@@ -12,7 +12,7 @@ class ApiKeyAuth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $apiKey = $request->getHeaderLine('X-API-Key');
-
+        
         if (!$apiKey) {
             return service('response')->setJSON(['message' => 'ไม่อนุญาติให้ใช้บริการ'])->setStatusCode(401);
         }

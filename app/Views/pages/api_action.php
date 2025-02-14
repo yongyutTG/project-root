@@ -85,14 +85,17 @@
 </div>
 
 <script>
+ 
+
     // Read
     function getRequests() {
     fetch('http://localhost:8080/api', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-API-Key': 'ec3e372a2754d167c6cf218d65e0e3c49eaf69dcc15abb01a0e0780c8c1f527e', // 🔑 ใส่ API Key ที่ได้รับ
-            // 'Authorization': `Bearer your-secret-api-key` // 🔐 ใช้ Authorization Header
+            // 'Authorization' : 'eyJ0eddssdXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzkyOTQxNjUsImV4cCI6MTczOTI5Nzc2NSwiZGF0YSI6eyJpZCI6MSwidXNlcm5hbWUiOiJleGFtcGxldXNlciIsInJvbGUiOiJhZG1pbiJ9fQ.XZ8gHKrk9Bb3ekKaaNR6P4vQQULFDF1-jbNuBrTP1MU',
+            'X-API-Key':  'c79a63cf10f3cf7f9d080fd02a1861ec69a58132df57819c2613c1ed582a98b3'
+        
         }
     })
     .then(response => response.json()) 
@@ -201,7 +204,7 @@
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-           'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับs
+           'X-API-Key': 'c79a63cf10f3cf7f9d080fd02a1861ec69a58132df57819c2613c1ed582a98b3' // 🔑 ใส่ API Key ที่ได้รับs
         }
     })
     .then(response => response.json()) // แปลงข้อมูลเป็น JSON
@@ -244,7 +247,7 @@
             method: 'DELETE', // ใช้ HTTP DELETE
             headers: {
             'Content-Type': 'application/json',
-            'X-API-Key': '0c45fda12613c79090874f88889cdef4a13b1e28b2b10a54907fe84de9eef92f' // 🔑 ใส่ API Key ที่ได้รับs
+            'X-API-Key': 'c79a63cf10f3cf7f9d080fd02a1861ec69a58132df57819c2613c1ed582a98b3' // 🔑 ใส่ API Key ที่ได้รับs
              }
         })
             .then(response => response.json())

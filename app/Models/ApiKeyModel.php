@@ -16,12 +16,6 @@ class ApiKeyModel extends Model
     {
         $apiKey = bin2hex(random_bytes(32)); // สร้าง API Key แบบสุ่ม 64 ตัวอักษร
 
-        // // ตรวจสอบว่าผู้ใช้มีอยู่จริงหรือไม่ (แนะนำ)
-        // $userModel = new \App\Models\UserModel(); 
-        // if (!$userModel->find($userId)) {
-        //     return false; // หากไม่พบผู้ใช้
-        // }
-
         $this->insert([
             'user_id' => $userId,
             'api_key' => $apiKey
@@ -35,3 +29,6 @@ class ApiKeyModel extends Model
         return $this->where('api_key', $apiKey)->first();
     }
 }
+การทำงานของระบบ API Key ใน CodeIgniter 4
+-เมื่อเรียก ฟังก์ชัน createApiKey จะสร้าง API Key ใหม่ และบันทึกลงฐานข้อมูลหรือ .env ขึ้นอยู่กับการกำหนด
+-เมื่อเรียก ฟังก์ชัน validateApiKey จะตรวจสอบความถูกต้องของ API Key ที่ส่งมา ในฐานข้อมูล 

@@ -40,7 +40,7 @@ class ApiKeyController extends ResourceController
     // ตรวจสอบ API Key
     public function validateApiKey()
     {
-        $apiKey = $this->request->getHeaderLine('X-API-Key'); // รับค่า API Key จาก Header
+        $apiKey = $this->request->getHeaderLine('Authorization'); // รับค่า API Key จาก Header
         if (!$apiKey) {
             return $this->failUnauthorized('ไม่มี API Key ');
         }

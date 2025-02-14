@@ -24,6 +24,8 @@ $routes->group('api', function ($routes) {
     $routes->post('create-api-key', 'ApiKeyController::createApiKey');
     $routes->get('validate-api-key', 'ApiKeyController::validateApiKey');
 
+ 
+
 
     $routes->get('/', 'Api::index', ['filter' => 'apiKeyAuth']);
     $routes->get('(:num)', 'Api::show/$1', ['filter' => 'apiKeyAuth']);
